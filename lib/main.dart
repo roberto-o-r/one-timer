@@ -3,6 +3,10 @@ import 'dart:math' as math;
 
 void main() => runApp(MaterialApp(
       home: OneTimerApp(),
+      theme: ThemeData(
+        canvasColor: Colors.blueGrey,
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
     ));
 
 class OneTimerApp extends StatefulWidget {
@@ -44,10 +48,10 @@ class OneTimerState extends State<OneTimerApp> with TickerProviderStateMixin {
                         child: AnimatedBuilder(
                           animation: controller,
                           builder: (BuildContext context, Widget child) {
-                            return CustomPaint(
+                            return new CustomPaint(
                               painter: TimerPainter(
                                   animation: controller,
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: Colors.red,
                                   color: Colors.pink),
                             );
                           },
