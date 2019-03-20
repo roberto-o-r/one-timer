@@ -4,9 +4,10 @@ import 'dart:math' as math;
 void main() => runApp(MaterialApp(
       home: OneTimerApp(),
       theme: ThemeData(
-        canvasColor: Colors.blueGrey,
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
+          canvasColor: Colors.blueGrey,
+          iconTheme: IconThemeData(color: Colors.white),
+          accentColor: Colors.pinkAccent,
+          brightness: Brightness.dark),
     ));
 
 class OneTimerApp extends StatefulWidget {
@@ -32,6 +33,7 @@ class OneTimerState extends State<OneTimerApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(8.0),
@@ -48,21 +50,66 @@ class OneTimerState extends State<OneTimerApp> with TickerProviderStateMixin {
                         child: AnimatedBuilder(
                           animation: controller,
                           builder: (BuildContext context, Widget child) {
-                            return new CustomPaint(
-                              painter: TimerPainter(
-                                  animation: controller,
-                                  backgroundColor: Colors.red,
-                                  color: Colors.pink),
-                            );
+                            return CustomPaint(
+                                painter: TimerPainter(
+                                    animation: controller,
+                                    backgroundColor: Colors.red,
+                                    color: themeData.indicatorColor));
                           },
                         ),
                       ),
+                      Align(
+                          alignment: FractionalOffset.center,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text("One Timer",
+                                  style: themeData.textTheme.subhead),
+                              AnimatedBuilder(
+                                animation: controller,
+                                builder: (BuildContext context, Widget child) {
+                                  return Text(
+                                    timerString,
+                                    style: themeData.textTheme.display4,
+                                  );
+                                },
+                              ),
+                            ],
+                          ))
                     ],
                   ),
                 ),
               ),
             ),
-            Align()
+            Container(
+              margin: EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  FloatingActionButton(
+                    child: AnimatedBuilder(
+                      animation: controller,
+                      builder: (BuildContext context, Widget child) {
+                        return Icon(controller.isAnimating
+                            ? Icons.pause
+                            : Icons.play_arrow);
+                      },
+                    ),
+                    onPressed: () {
+                      if (controller.isAnimating) {
+                        controller.stop();
+                      } else {
+                        controller.reverse(
+                            from: controller.value == 0.0
+                                ? 1.0
+                                : controller.value);
+                      }
+                    },
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -85,7 +132,7 @@ class TimerPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
-    canvas.drawCircle(size.center(Offset.zero), size.width / 20.0, paint);
+    canvas.drawCircle(size.center(Offset.zero), size.width / 2.0, paint);
     paint.color = color;
     double progress = (1.0 - animation.value) * 2 * math.pi;
     canvas.drawArc(Offset.zero & size, math.pi * 1.5, -progress, false, paint);
