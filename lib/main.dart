@@ -1,3 +1,4 @@
+import 'package:audioplayers/audio_cache.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -12,6 +13,8 @@ class OneTimerApp extends StatefulWidget {
 
 class OneTimerState extends State<OneTimerApp> with TickerProviderStateMixin {
   AnimationController controller;
+  AudioCache player = new AudioCache(prefix: 'sounds/');
+  int playerSeconds = 0;
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -58,6 +61,12 @@ class OneTimerState extends State<OneTimerApp> with TickerProviderStateMixin {
                           child: AnimatedBuilder(
                             animation: controller,
                             builder: (BuildContext context, Widget child) {
+                              int s = (controller.duration * controller.value)
+                                  .inSeconds;
+                              if (s % 5 == 0 && playerSeconds != s) {
+                                playerSeconds = s;
+                                player.play('classic-1.mp3');
+                              }
                               return Text(
                                 timerString,
                                 style: themeData.textTheme.display4,
