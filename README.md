@@ -1,6 +1,6 @@
 # one_timer
 
-A new Flutter project.
+A timer to rule them all.
 
 ## Getting Started
 
